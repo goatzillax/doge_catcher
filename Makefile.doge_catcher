@@ -1,0 +1,16 @@
+
+
+-include Makefile.targets
+
+
+all: ${TARGETS} Makefile.targets
+
+.SUFFIXES: .mp4 .mvtxt
+
+.mp4.mvtxt:
+	nice -19 python doge_catcher.py $< > $@
+
+SRC=
+
+Makefile.targets:
+	echo TARGETS=\\ > $@; ls ${SRC}*.mp4 | sed 's/mp4/mvtxt \\/' >> $@
