@@ -36,7 +36,7 @@ for f in input_filelist:
 
     for k in stats.keys():
         if stats[k].contains(extdata.time):
-         stats[k].files.append(extdata)
+            stats[k].files.append(extdata)
 
 
 makefile = open("Makefile.targets", "w")
