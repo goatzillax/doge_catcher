@@ -13,4 +13,4 @@ all: ${TARGETS} Makefile.targets
 SRC=
 
 Makefile.targets:
-	echo TARGETS=\\ > $@; ls ${SRC}*.mp4 | sed 's/mp4/mvtxt \\/' >> $@
+	python gen_lists.py ${SRC}
