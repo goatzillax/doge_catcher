@@ -16,4 +16,4 @@ Makefile.targets:
 	python gen_lists.py ${SRC}
 
 debug.mp4: input.mp4
-	ffmpeg -flags2 +export_mvs -i input.mp4 -vf codecview=mv=pf+bf+bb $@
+	ffmpeg -flags2 +export_mvs -i input.mp4 -vf "codecview=mv=pf+bf+bb, drawtext=fontfile=Arial.ttf: text='%{frame_num}': start_number=1: x=(w-tw)/2: y=h-(2*lh): fontcolor=black: fontsize=20: box=1: boxcolor=white: boxborderw=5" $@
