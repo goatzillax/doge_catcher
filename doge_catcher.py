@@ -17,6 +17,14 @@ frame = 0  #  this is probably not useful, will have to check.  timestamps more 
 
 max_mv = [0, 0]
 
+# mv indices
+src_x = 3
+src_y = 4
+dst_x = 5
+dst_y = 6
+motion_x = 7
+motion_y = 8
+
 while True:
    retval = vc.read()
 
@@ -34,30 +42,26 @@ while True:
    for mv in retval[2]:
       if not (mv[0] < 0):
          print("future frame reference found")
+         continue
       if not (mv[9] == 4):  #  seems like the subpixel resolution is fixed at 1/4 or whatever
          print("motion_scale != 4")
+         continue
 
       # alright if we managed to survive the gauntlet let's do this.
       mv_cnt += 1
 
-      # mv indices
-      src_x = 3
-      src_y = 4
-      dst_x = 5
-      dst_y = 6
-      motion_x = 7
-      motion_y = 8
-
       # Origin appears to be top left
-      # Uh, why are we getting weird values?  this is nearly as shitty as the original code.
-      if mv[src_x] < mask.width and mv[src_y] < mask.height and \
-         mv[dst_x] < mask.width and mv[dst_y] < mask.height:
-         if (mask.getpixel((mv[src_x],mv[src_y])) != 0) and (mask.getpixel((mv[dst_x],mv[dst_y])) != 0):
+      # still kind of shitty, but a more advanced kind of shitty
+      try:
+         search = (mask.getpixel((mv[src_x],mv[src_y])) != 0) and (mask.getpixel((mv[dst_x],mv[dst_y])) != 0)
+         if search:
             sum[0] += mv[motion_x]
             sum[1] += mv[motion_y]
+      except:
+         pass #  WOW there are a lot of MV's right at 1080 for some reason
+         #print("ERROR:  bad getpixel src=(%d,%d) dst=(%d,%d)" % (mv[src_x],mv[src_y],mv[dst_x],mv[dst_y]))
 
    if (mv_cnt):
-
       #  should probably have an upper bounds too unless turbo doge vtec kicked in yo
       if (sum[0] > 1000):
          print("frame %6d: mv_cnt %d vector sum (%d, %d)" % (frame, mv_cnt, sum[0], sum[1]))
