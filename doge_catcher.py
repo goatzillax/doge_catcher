@@ -1,15 +1,19 @@
 import sys, getopt
 from mvextractor.videocap import VideoCap
 
+from PIL import Image
+import PIL.ImageOps
+
+#  bitmap mask file is black on white because it's easier to draw that way, so invert it for actual use
+#  i.e. in the script black is 0, aka "do not search"
+mask = PIL.ImageOps.invert(Image.open("mask.bmp"))
+
 f = sys.argv[1]
 
 vc = VideoCap()
 vc.open(f)
 
 frame = 0  #  this is probably not useful, will have to check.  timestamps more useful butt complicated
-
-bounds_topleft = [850, 75]
-bounds_bottomright = [1500, 175]
 
 max_mv = [0, 0]
 
@@ -44,15 +48,16 @@ while True:
       motion_x = 7
       motion_y = 8
 
-      # Sadly I don't know where origin is and these graphics guys always gotta fuck shit up
-      if (mv[src_x] >= bounds_topleft[0]) and (mv[src_x] <= bounds_bottomright[0]) and \
-         (mv[dst_x] >= bounds_topleft[0]) and (mv[dst_x] <= bounds_bottomright[0]) and \
-         (mv[src_y] >= bounds_topleft[1]) and (mv[src_y] <= bounds_bottomright[1]):
-
-         sum[0] += mv[motion_x]
-         sum[1] += mv[motion_y]
+      # Origin appears to be top left
+      # Uh, why are we getting weird values?  this is nearly as shitty as the original code.
+      if mv[src_x] < mask.width and mv[src_y] < mask.height and \
+         mv[dst_x] < mask.width and mv[dst_y] < mask.height:
+         if (mask.getpixel((mv[src_x],mv[src_y])) != 0) and (mask.getpixel((mv[dst_x],mv[dst_y])) != 0):
+            sum[0] += mv[motion_x]
+            sum[1] += mv[motion_y]
 
    if (mv_cnt):
+
       #  should probably have an upper bounds too unless turbo doge vtec kicked in yo
       if (sum[0] > 1000):
          print("frame %6d: mv_cnt %d vector sum (%d, %d)" % (frame, mv_cnt, sum[0], sum[1]))
