@@ -14,3 +14,6 @@ SRC=
 
 Makefile.targets:
 	python gen_lists.py ${SRC}
+
+debug.mp4: input.mp4
+	ffmpeg -flags2 +export_mvs -i input.mp4 -vf codecview=mv=pf+bf+bb $@
