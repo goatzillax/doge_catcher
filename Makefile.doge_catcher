@@ -7,7 +7,7 @@ all: ${TARGETS} Makefile.targets
 
 .SUFFIXES: .mp4 .mvtxt
 
-.mp4.mvtxt:
+.mp4.mvtxt: mask.bmp
 	nice -19 python doge_catcher.py $< > $@
 
 SRC=
