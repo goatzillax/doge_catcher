@@ -15,8 +15,6 @@ vc.open(f)
 
 frame = 0  #  this is probably not useful, will have to check.  timestamps more useful butt complicated
 
-max_mv = [0, 0]
-
 # mv indices
 src_x = 3
 src_y = 4
@@ -24,6 +22,8 @@ dst_x = 5
 dst_y = 6
 motion_x = 7
 motion_y = 8
+
+history = []
 
 while True:
    retval = vc.read()
@@ -63,11 +63,19 @@ while True:
 
    if (mv_cnt):
       #  should probably have an upper bounds too unless turbo doge vtec kicked in yo
+      match = ""
       if (sum[0] > 1000):
-         print("frame %6d: mv_cnt %d vector sum (%d, %d)" % (frame, mv_cnt, sum[0], sum[1]))
-      if sum[0] > max_mv[0]:
-         #  DGAF about Y right now
-         max_mv[0] = sum[0]  #  a new record!
-         #print("frame %6d max_mv x: %d" % (frame, max_mv[0]))
+         history.append((frame, sum))
+         if len(history) > 8:
+            history.pop(0)
+         if len(history) == 8:
+            if history[-1][0] - history[0][0] < 100:
+               avg_y = 0
+               for e in history:
+                  avg_y += e[1][1]
+               avg_y = avg_y / len(history)
+               if avg_y <= 0:
+                  match = " *"
 
+         print("frame %6d: mv_cnt %d vector sum (%d, %d)%s" % (frame, mv_cnt, sum[0], sum[1], match))
 
