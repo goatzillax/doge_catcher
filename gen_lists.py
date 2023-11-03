@@ -26,8 +26,8 @@ class stat_data:
 input_filelist = sys.argv[1:]
 
 stats = dict()
-stats["AM"] = stat_data([6*3600, 8*3600], 25128)
-stats["PM"] = stat_data([16*3600, 20*3600], 64349)
+stats["AM"] = stat_data([6*3600, 10*3600], 25128)
+stats["PM"] = stat_data([16*3600, 21*3600], 64349)
 
 filelist = []
 

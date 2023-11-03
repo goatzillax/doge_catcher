@@ -66,16 +66,16 @@ while True:
       match = ""
       if (sum[0] > 1000):
          history.append((frame, sum))
-         if len(history) > 8:
+         if len(history) > 6:
             history.pop(0)
-         if len(history) == 8:
+         if len(history) == 6:
             if history[-1][0] - history[0][0] < 100:
                avg_y = 0
                for e in history:
                   avg_y += e[1][1]
                avg_y = avg_y / len(history)
                if avg_y <= 0:
-                  match = " *"
+                  match = "**"
 
-         print("frame %6d: mv_cnt %d vector sum (%d, %d)%s" % (frame, mv_cnt, sum[0], sum[1], match))
+         print("frame %6d: %2s mv_cnt %d vector sum (%d, %d)" % (frame, match, mv_cnt, sum[0], sum[1]))
 
