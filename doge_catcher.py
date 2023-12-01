@@ -25,6 +25,8 @@ motion_y = 8
 
 history = []
 
+extract_framelist = []
+
 while True:
    retval = vc.read()
 
@@ -76,6 +78,26 @@ while True:
                avg_y = avg_y / len(history)
                if avg_y <= 0:
                   match = "**"
+                  #  fuck it, we'll do it live
+                  for tmp in range(frame-8, frame):
+                     if not tmp in extract_framelist:
+                        extract_framelist.append(tmp)
+                  #extract_framelist.append(frame)
 
          print("frame %6d: %2s mv_cnt %d vector sum (%d, %d)" % (frame, match, mv_cnt, sum[0], sum[1]))
 
+
+
+# shit this is going to get nasty
+
+FIRST=1;
+if len(extract_framelist) > 0:
+   filterfile = open("%s.filter" % (f[:-4]), "w")
+   filterfile.write("select=")
+   for fr in extract_framelist:
+      if not FIRST:
+         filterfile.write("+")
+      else:
+         FIRST=0
+      filterfile.write("eq(n\\,%d)" % (fr))
+   filterfile.close();
