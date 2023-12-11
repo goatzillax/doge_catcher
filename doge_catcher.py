@@ -1,12 +1,26 @@
 import sys, getopt
+#import tracemalloc
+
 from mvextractor.videocap import VideoCap
 
 from PIL import Image
 import PIL.ImageOps
 
+#tracemalloc.start()
+
 #  bitmap mask file is black on white because it's easier to draw that way, so invert it for actual use
 #  i.e. in the script black is 0, aka "do not search"
 mask = PIL.ImageOps.invert(Image.open("mask.bmp"))
+
+bitmask = []
+bitmask_w = mask.width
+bitmask_h = mask.height
+#  cool.  PIL apparently has a memory leak.  retarded.
+for y in range(bitmask_h):
+   for x in range(bitmask_w):
+      bitmask.append(mask.getpixel((x,y)))
+
+del(mask)
 
 f = sys.argv[1]
 
@@ -55,7 +69,7 @@ while True:
       # Origin appears to be top left
       # still kind of shitty, but a more advanced kind of shitty
       try:
-         search = (mask.getpixel((mv[src_x],mv[src_y])) != 0) and (mask.getpixel((mv[dst_x],mv[dst_y])) != 0)
+         search = (bitmask[mv[src_x]+mv[src_y]*bitmask_w] != 0) and (bitmask[mv[dst_x]+mv[dst_y]*bitmask_w] != 0)
          if search:
             sum[0] += mv[motion_x]
             sum[1] += mv[motion_y]
@@ -85,6 +99,12 @@ while True:
                   #extract_framelist.append(frame)
 
          print("frame %6d: %2s mv_cnt %d vector sum (%d, %d)" % (frame, match, mv_cnt, sum[0], sum[1]))
+
+#   if (frame % 100 == 0):
+#      snapshot = tracemalloc.take_snapshot()
+#      top_stats = snapshot.statistics('lineno')
+#      for stat in top_stats[:10]:
+#         print(stat)
 
 
 
