@@ -1,14 +1,16 @@
 #!/bin/bash
 
-BN=$1
+FN=$1
+DN=`dirname $1`
+BN=`basename $1 .filter`
 
-if [ ! -f "${BN}.filter" ]; then
+if [ ! -f "${FN}" ]; then
    echo suck on it trebeck
    exit
 fi
 
-ffmpeg -i ${BN}.mp4 -filter_complex_script ${BN}.filter -vsync 0 ${BN}-frame%04d.png
+ffmpeg -i ${DN}/${BN}.mp4 -filter_complex_script ${DN}/${BN}.filter -vsync 0 ${DN}/${BN}-frame%04d.png
 
-for f in `ls $BN-frame????.png`; do
-   python ./findContours.py $f
+for f in `ls ${DN}/$BN-frame????.png`; do
+   python findContours.py $f
 done
