@@ -85,7 +85,7 @@ while True:
          if len(history) > 6:
             history.pop(0)
          if len(history) == 6:
-            if history[-1][0] - history[0][0] < 100:
+            if history[-1][0] - history[0][0] < 200:
                avg_y = 0
                for e in history:
                   avg_y += e[1][1]
@@ -93,7 +93,8 @@ while True:
                if avg_y <= 0:
                   match = "**"
                   #  fuck it, we'll do it live
-                  for tmp in range(frame-8, frame):
+                  #  actually should start marking frames starting from history[0][0]...
+                  for tmp in range(history[0][0], frame):
                      if not tmp in extract_framelist:
                         extract_framelist.append(tmp)
                   #extract_framelist.append(frame)
