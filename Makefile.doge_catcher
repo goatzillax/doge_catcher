@@ -5,10 +5,20 @@
 
 all: ${TARGETS} Makefile.targets
 
-.SUFFIXES: .mp4 .mvtxt
+.SUFFIXES: .mp4 .mvtxt .avi
 
+
+.mp4.avi:
+	nice -19 ./dvr-scan.sh $<
+
+#  kind of assumes dvr-scan finishes faster, which it should easily.  might need a join/wait?  fuck it we'll do it live
 .mp4.mvtxt: mask.bmp
+	nice -19 ./dvr-scan.sh $< &
 	nice -19 python doge_catcher.py $< > $@
+
+AVIFILES=${TARGETS:mvtxt=avi}
+
+dvrscan: Makefile.targets ${TARGETS:mvtxt=avi}
 
 SRC=
 

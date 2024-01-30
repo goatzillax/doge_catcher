@@ -90,7 +90,7 @@ while True:
                for e in history:
                   avg_y += e[1][1]
                avg_y = avg_y / len(history)
-               if avg_y <= 0:
+               if avg_y <= 50:
                   match = "**"
                   #  fuck it, we'll do it live
                   #  actually should start marking frames starting from history[0][0]...
