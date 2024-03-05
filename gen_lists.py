@@ -27,7 +27,7 @@ input_filelist = sys.argv[1:]
 
 stats = dict()
 stats["AM"] = stat_data([6*3600, 12*3600], 25128)
-stats["PM"] = stat_data([12*3600, 21*3600], 64349)
+stats["PM"] = stat_data([12*3600, 22*3600], 64349)
 
 filelist = []
 
